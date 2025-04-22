@@ -4,10 +4,9 @@ def buscar_volumes(manga_id,linguagem):
     url = f"https://api.mangadex.org/chapter?manga={manga_id}&translatedLanguage[]={linguagem}&limit=100&order[chapter]=asc"
     resp = requests.get(url)
     resp.raise_for_status()
-    return resp.json()  # Retorna todo o JSON, não apenas os dados
+    return resp.json()  
 
-def selecionar_melhor_idioma_por_volume(dados_api):
-    # Organizar os capítulos por volume e idioma
+def selecionar_melhor_idioma_por_volume(dados_api):   
     volumes = {}
     
     for chapter in dados_api['data']:
