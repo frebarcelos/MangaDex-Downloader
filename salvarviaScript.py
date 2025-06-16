@@ -30,11 +30,27 @@ def iniciar_driver():
     return driver
 
 # Faz requisição à API para pegar capítulos
-def buscar_capitulos(manga_id, volume,linguagem):
-    url = f"https://api.mangadex.org/chapter?manga={manga_id}&translatedLanguage[]={linguagem}&limit=100&volume[]={volume}&order[chapter]=asc"
-    resp = requests.get(url)
-    resp.raise_for_status()
-    return resp.json()["data"]
+def buscar_capitulos(manga_id, volume, linguagem):
+    all_data = []
+    offset = 0
+
+    while True:
+        url = (
+            f"https://api.mangadex.org/chapter?manga={manga_id}"
+            f"&translatedLanguage[]={linguagem}&limit=100&offset={offset}"
+            f"&volume[]={volume}&order[chapter]=asc"
+        )
+        resp = requests.get(url)
+        resp.raise_for_status()
+        data = resp.json()
+        all_data.extend(data.get("data", []))
+
+        total = data.get("total", 0)
+        offset += data.get("limit", 100)
+        if offset >= total or not data.get("data"):
+            break
+
+    return all_data
 
 
     

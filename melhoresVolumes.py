@@ -1,10 +1,26 @@
 import requests
 
-def buscar_volumes(manga_id,linguagem):
-    url = f"https://api.mangadex.org/chapter?manga={manga_id}&translatedLanguage[]={linguagem}&limit=100&order[chapter]=asc"
-    resp = requests.get(url)
-    resp.raise_for_status()
-    return resp.json()  
+def buscar_volumes(manga_id, linguagem):
+    all_data = []
+    offset = 0
+
+    while True:
+        url = (
+            f"https://api.mangadex.org/chapter?manga={manga_id}"
+            f"&translatedLanguage[]={linguagem}&limit=100&offset={offset}"
+            f"&order[chapter]=asc"
+        )
+        resp = requests.get(url)
+        resp.raise_for_status()
+        data = resp.json()
+        all_data.extend(data.get("data", []))
+
+        total = data.get("total", 0)
+        offset += data.get("limit", 100)
+        if offset >= total or not data.get("data"):
+            break
+
+    return {"data": all_data}
 
 def selecionar_melhor_idioma_por_volume(dados_api):   
     volumes = {}
