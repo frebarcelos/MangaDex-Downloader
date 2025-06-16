@@ -50,8 +50,6 @@ def criar_pdfs_para_pastas(diretorio_raiz,nome_pasta,troca_capa):
                         t.main(caminhoCapa,caminho_pdf)
                     else:
                         print('Digite um caminho valido')
-                        
-                scriptTrocaCapa()
         except Exception as e:
             print(f"Erro ao salvar PDF {caminho_pdf}: {e}")
     else:
