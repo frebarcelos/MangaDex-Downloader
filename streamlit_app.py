@@ -2,6 +2,34 @@ import os
 import re
 import streamlit as st
 
+USERNAME = os.environ.get("APP_USERNAME", "admin")
+PASSWORD = os.environ.get("APP_PASSWORD", "1234")
+
+
+def show_login():
+    """Exibe a tela de login e valida as credenciais."""
+    st.title("Login")
+
+    with st.form("login_form"):
+        user = st.text_input("Usuário")
+        pwd = st.text_input("Senha", type="password")
+        submitted = st.form_submit_button("Entrar")
+
+    if submitted:
+        if user == USERNAME and pwd == PASSWORD:
+            st.session_state.logged_in = True
+            st.experimental_rerun()
+        else:
+            st.error("Usuário ou senha incorretos.")
+
+
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+
+if not st.session_state.logged_in:
+    show_login()
+    st.stop()
+
 from config_types import MangaConfig
 import melhoresVolumes as m
 import salvarviaScript as s
